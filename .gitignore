@@ -1,6 +1,5 @@
 # Visual Studio 2015 cache/options directory
 .vs/
 
-# Build directories
-bin/
-obj/
+# Build directory
+Build/
