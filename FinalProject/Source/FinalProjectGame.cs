@@ -16,6 +16,8 @@ namespace FinalProject
                 PreferredBackBufferHeight = 600
             };
 
+            IsMouseVisible = true;
+
             Content.RootDirectory = "Content";
         }
 
@@ -24,7 +26,8 @@ namespace FinalProject
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
 
             m_screenManager = new ScreenManager(m_spriteBatch);
-            m_screenManager.Push(new GameplayScreen(this, m_screenManager));
+            m_screenManager.Push(new BackgroundScreen(this, m_screenManager));
+            m_screenManager.Push(new MainMenuScreen(this, m_screenManager));
         }
 
         protected override void UnloadContent()
