@@ -48,7 +48,7 @@ namespace FinalProject
 
         public void Update(GameTime gameTime)
         {
-            foreach (Screen screen in m_screens)
+            foreach (Screen screen in m_screens.Reverse())
             {
                 screen.Update(gameTime);
             }
@@ -56,7 +56,7 @@ namespace FinalProject
 
         public void Draw(GameTime gameTime)
         {
-            foreach (Screen screen in m_screens)
+            foreach (Screen screen in m_screens.Reverse())
             {
                 screen.Draw(gameTime, m_spriteBatch);
             }
