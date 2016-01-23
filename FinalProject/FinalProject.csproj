@@ -42,6 +42,9 @@
     <Compile Include="Source\FinalProjectGame.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Screens\Game\GameplayScreen.cs" />
+    <Compile Include="Source\Utilities\Screen.cs" />
+    <Compile Include="Source\Utilities\ScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

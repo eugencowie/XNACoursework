@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace FinalProject
 {
     public class FinalProjectGame : Game
     {
         private SpriteBatch m_spriteBatch;
+        private ScreenManager m_screenManager;
 
         public FinalProjectGame()
         {
@@ -22,18 +22,23 @@ namespace FinalProject
         protected override void LoadContent()
         {
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            m_screenManager = new ScreenManager(m_spriteBatch);
+            m_screenManager.Push(new GameplayScreen(this, m_screenManager));
         }
 
         protected override void UnloadContent()
         {
+            if (m_screenManager != null)
+            {
+                m_screenManager.Dispose();
+                m_screenManager = null;
+            }
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                Exit();
-            }
+            m_screenManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -41,6 +46,8 @@ namespace FinalProject
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            m_screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
         }
