@@ -45,6 +45,7 @@
     <Compile Include="Source\Screens\Game\GameplayScreen.cs" />
     <Compile Include="Source\Utilities\Screen.cs" />
     <Compile Include="Source\Utilities\ScreenManager.cs" />
+    <Compile Include="Source\Utilities\Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
