@@ -27,7 +27,7 @@ namespace FinalProject
 
             m_button.Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2();
             m_button.Padding = new Vector2(25, 25);
-            m_button.Label = "Test button";
+            m_button.Label = "Start game";
         }
 
         public void Dispose()
@@ -43,27 +43,19 @@ namespace FinalProject
                 m_game.Exit();
             }
 
-            if (kbs.IsKeyDown(Keys.D1))
+            MouseState ms = Mouse.GetState();
+            if (m_button.Bounds.Contains(ms.X, ms.Y))
             {
-                m_button.Label = "";
-            }
+                m_button.Color = Color.Green;
 
-            if (kbs.IsKeyDown(Keys.D2))
+                if (ms.LeftButton == ButtonState.Pressed)
+                {
+                    m_screenManager.Switch(new GameplayScreen(m_game));
+                }
+            }
+            else
             {
-                m_button.Label = "Test button";
                 m_button.Color = Color.Red;
-            }
-
-            if (kbs.IsKeyDown(Keys.D3))
-            {
-                m_button.Label = "Lorum ipsum delor sit amet";
-                m_button.Color = Color.Blue;
-            }
-
-            if (kbs.IsKeyDown(Keys.D4))
-            {
-                m_button.Label = "Lorum ipsum delor sit amet, the little brown dog jumped over the lazy cow";
-                m_button.Color = Color.Purple;
             }
         }
 
