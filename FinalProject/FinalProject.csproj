@@ -48,6 +48,7 @@
     <Compile Include="Source\Screens\Menu\MainMenuScreen.cs" />
     <Compile Include="Source\Utilities\Button.cs" />
     <Compile Include="Source\Utilities\IScreen.cs" />
+    <Compile Include="Source\Utilities\Map.cs" />
     <Compile Include="Source\Utilities\ScreenManager.cs" />
     <Compile Include="Source\Utilities\Sprite.cs" />
   </ItemGroup>
