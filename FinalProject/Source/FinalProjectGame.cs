@@ -25,8 +25,8 @@ namespace FinalProject
         {
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            m_screenManager = new ScreenManager(m_spriteBatch);
-            m_screenManager.Push(new BackgroundScreen(this, m_screenManager));
+            m_screenManager = new ScreenManager(this, m_spriteBatch);
+            m_screenManager.Push(new BackgroundScreen(this));
             m_screenManager.Push(new MainMenuScreen(this, m_screenManager));
         }
 

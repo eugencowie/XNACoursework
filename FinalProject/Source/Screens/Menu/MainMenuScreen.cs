@@ -1,43 +1,52 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace FinalProject
 {
-    class MainMenuScreen : Screen
+    class MainMenuScreen : IScreen
     {
+        private readonly Game m_game;
+        private readonly ScreenManager m_screenManager;
+
         private Button m_button;
 
         public MainMenuScreen(Game game, ScreenManager screenManager)
-            : base(game, screenManager)
         {
+            m_game = game;
+            m_screenManager = screenManager;
         }
 
-        public override void Initialize()
+        public void Initialize(ContentManager content)
         {
             m_button = new Button(
-                Content.Load<Texture2D>("Textures/Menu/Button_Cap"),
-                Content.Load<Texture2D>("Textures/Menu/Button_Center"),
-                Content.Load<SpriteFont>("Fonts/Menu"));
+                content.Load<Texture2D>("Textures/Menu/Button_Cap"),
+                content.Load<Texture2D>("Textures/Menu/Button_Center"),
+                content.Load<SpriteFont>("Fonts/Menu"));
 
-            m_button.Position = Viewport.Bounds.Center.ToVector2();
+            m_button.Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2();
             m_button.Padding = new Vector2(25, 25);
             m_button.Label = "Test button";
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             KeyboardState kbs = Keyboard.GetState();
 
             if (kbs.IsKeyDown(Keys.Escape))
-                Game.Exit();
+            {
+                m_game.Exit();
+            }
 
             if (kbs.IsKeyDown(Keys.D1))
+            {
                 m_button.Label = "";
+            }
 
             if (kbs.IsKeyDown(Keys.D2))
             {
@@ -58,7 +67,7 @@ namespace FinalProject
             }
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 

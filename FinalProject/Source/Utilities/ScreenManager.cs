@@ -8,18 +8,27 @@ namespace FinalProject
 {
     class ScreenManager : IDisposable
     {
+        private readonly Game m_game;
         private readonly SpriteBatch m_spriteBatch;
 
-        private readonly Stack<Screen> m_screens = new Stack<Screen>();
+        private readonly Stack<IScreen> m_screens = new Stack<IScreen>();
 
-        public ScreenManager(SpriteBatch spriteBatch)
+        public ScreenManager(Game game, SpriteBatch spriteBatch)
         {
+            m_game = game;
             m_spriteBatch = spriteBatch;
         }
 
-        public void Push(Screen screen)
+        public void Switch(IScreen screen)
         {
-            screen.Initialize();
+            RemoveAll();
+
+            Push(screen);
+        }
+
+        public void Push(IScreen screen)
+        {
+            screen.Initialize(m_game.Content);
 
             m_screens.Push(screen);
         }
@@ -48,7 +57,7 @@ namespace FinalProject
 
         public void Update(GameTime gameTime)
         {
-            foreach (Screen screen in m_screens.Reverse())
+            foreach (IScreen screen in m_screens.Reverse())
             {
                 screen.Update(gameTime);
             }
@@ -56,7 +65,7 @@ namespace FinalProject
 
         public void Draw(GameTime gameTime)
         {
-            foreach (Screen screen in m_screens.Reverse())
+            foreach (IScreen screen in m_screens.Reverse())
             {
                 screen.Draw(gameTime, m_spriteBatch);
             }
