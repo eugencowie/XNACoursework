@@ -18,6 +18,7 @@ namespace FinalProject
             : base(texture)
         {
             Origin = Texture.Bounds.Center.ToVector2();
+            Rotation = MathHelper.ToRadians(45);
         }
 
         public void Update(GameTime gameTime)
@@ -63,6 +64,17 @@ namespace FinalProject
             }
 
             prevKbs = kbs;
+
+            MouseState ms = Mouse.GetState();
+
+            if (Intersects(ms.Position.ToVector2()))
+            {
+                Color = Color.Red;
+            }
+            else
+            {
+                Color = Color.White;
+            }
         }
 
         private bool OnGround()
