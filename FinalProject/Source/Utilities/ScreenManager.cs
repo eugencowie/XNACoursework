@@ -19,7 +19,7 @@ namespace FinalProject
             m_spriteBatch = spriteBatch;
         }
 
-        public void Switch(IScreen screen)
+        public void SwitchTo(IScreen screen)
         {
             RemoveAll();
 

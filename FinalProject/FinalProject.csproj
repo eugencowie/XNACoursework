@@ -46,7 +46,6 @@
     <Compile Include="Source\Screens\Menu\BackgroundScreen.cs" />
     <Compile Include="Source\Screens\Game\GameplayScreen.cs" />
     <Compile Include="Source\Screens\Menu\MainMenuScreen.cs" />
-    <Compile Include="Source\Utilities\Button.cs" />
     <Compile Include="Source\Utilities\IScreen.cs" />
     <Compile Include="Source\Utilities\Map.cs" />
     <Compile Include="Source\Utilities\ScreenManager.cs" />

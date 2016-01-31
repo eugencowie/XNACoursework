@@ -24,9 +24,9 @@ namespace FinalProject
         protected override void LoadContent()
         {
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
-
             m_screenManager = new ScreenManager(this, m_spriteBatch);
-            m_screenManager.Push(new BackgroundScreen(this));
+
+            m_screenManager.SwitchTo(new BackgroundScreen(this));
             m_screenManager.Push(new MainMenuScreen(this, m_screenManager));
         }
 

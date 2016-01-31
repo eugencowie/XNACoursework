@@ -10,7 +10,7 @@ namespace FinalProject
         private readonly Game m_game;
         private readonly ScreenManager m_screenManager;
 
-        private Button m_button;
+        private Sprite m_startButton;
 
         public MainMenuScreen(Game game, ScreenManager screenManager)
         {
@@ -20,14 +20,10 @@ namespace FinalProject
 
         public void Initialize(ContentManager content)
         {
-            m_button = new Button(
-                content.Load<Texture2D>("Textures/Menu/Button_Cap"),
-                content.Load<Texture2D>("Textures/Menu/Button_Center"),
-                content.Load<SpriteFont>("Fonts/Menu"));
-
-            m_button.Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2();
-            m_button.Padding = new Vector2(25, 25);
-            m_button.Label = "Start game";
+            m_startButton = new Sprite(content.Load<Texture2D>("Textures/Menu/StartButton"))
+            {
+                Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(),
+            };
         }
 
         public void Dispose()
@@ -44,18 +40,18 @@ namespace FinalProject
             }
 
             MouseState ms = Mouse.GetState();
-            if (m_button.Bounds.Contains(ms.X, ms.Y))
+            if (m_startButton.Intersects(ms.Position.ToVector2()))
             {
-                m_button.Color = Color.Green;
+                m_startButton.Color = Color.Green;
 
                 if (ms.LeftButton == ButtonState.Pressed)
                 {
-                    m_screenManager.Switch(new GameplayScreen(m_game));
+                    m_screenManager.SwitchTo(new GameplayScreen(m_game));
                 }
             }
             else
             {
-                m_button.Color = Color.Red;
+                m_startButton.Color = Color.Red;
             }
         }
 
@@ -63,7 +59,7 @@ namespace FinalProject
         {
             spriteBatch.Begin();
 
-            m_button.Draw(spriteBatch);
+            m_startButton.Draw(spriteBatch);
 
             spriteBatch.End();
         }
