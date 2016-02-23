@@ -6,18 +6,17 @@ namespace FinalProject
 {
     class BackgroundScreen : IScreen
     {
-        private readonly Game m_game;
-
-        private Texture2D m_backgroundTexture;
+        private Texture2D m_texture;
+        private Rectangle m_bounds;
 
         public BackgroundScreen(Game game)
         {
-            m_game = game;
+            m_bounds = game.GraphicsDevice.Viewport.Bounds;
         }
 
         public void Initialize(ContentManager content)
         {
-            m_backgroundTexture = content.Load<Texture2D>("Textures/Menu/Background");
+            m_texture = content.Load<Texture2D>("Textures/Menu/Background");
         }
 
         public void Dispose()
@@ -32,7 +31,7 @@ namespace FinalProject
         {
             spriteBatch.Begin();
 
-            spriteBatch.Draw(m_backgroundTexture, m_game.GraphicsDevice.Viewport.Bounds, Color.White);
+            spriteBatch.Draw(m_texture, m_bounds, Color.White);
 
             spriteBatch.End();
         }

@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace FinalProject
 {
     class ScreenManager : IDisposable
     {
-        private readonly Game m_game;
+        private readonly ContentManager m_content;
         private readonly SpriteBatch m_spriteBatch;
 
         private readonly Stack<IScreen> m_screens = new Stack<IScreen>();
 
-        public ScreenManager(Game game, SpriteBatch spriteBatch)
+        public ScreenManager(ContentManager content, SpriteBatch spriteBatch)
         {
-            m_game = game;
+            m_content = content;
             m_spriteBatch = spriteBatch;
         }
 
@@ -28,7 +29,7 @@ namespace FinalProject
 
         public void Push(IScreen screen)
         {
-            screen.Initialize(m_game.Content);
+            screen.Initialize(m_content);
 
             m_screens.Push(screen);
         }

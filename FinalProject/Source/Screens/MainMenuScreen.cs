@@ -20,10 +20,10 @@ namespace FinalProject
 
         public void Initialize(ContentManager content)
         {
-            m_startButton = new Sprite(content.Load<Texture2D>("Textures/Menu/StartButton"))
-            {
-                Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2(),
-            };
+            m_startButton = new Sprite(content.Load<Texture2D>("Textures/Menu/StartButton"));
+            m_startButton.Origin = m_startButton.Texture.Bounds.Center.ToVector2();
+
+            m_startButton.Position = m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2();
         }
 
         public void Dispose()
@@ -33,13 +33,13 @@ namespace FinalProject
         public void Update(GameTime gameTime)
         {
             KeyboardState kbs = Keyboard.GetState();
+            MouseState ms = Mouse.GetState();
 
             if (kbs.IsKeyDown(Keys.Escape))
             {
                 m_game.Exit();
             }
 
-            MouseState ms = Mouse.GetState();
             if (m_startButton.Intersects(ms.Position.ToVector2()))
             {
                 m_startButton.Color = Color.Green;

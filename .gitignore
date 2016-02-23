@@ -1,5 +1,6 @@
-# Visual Studio 2015 cache/options directory
+# Visual Studio files
 .vs/
+*.suo
 
 # Build directory
 Build/
