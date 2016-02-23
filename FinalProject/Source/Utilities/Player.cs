@@ -9,8 +9,8 @@ namespace FinalProject
         private const int PPU = 400;    // pixels per unit
         private const float MU = 0.1f;  // friction
 
-        private Vector2 m_velocity;
-        private Vector2 m_acceleration;
+        public Vector2 Velocity;
+        public Vector2 Acceleration;
 
         private KeyboardState prevKbs;
 
@@ -18,68 +18,42 @@ namespace FinalProject
             : base(texture)
         {
             Origin = Texture.Bounds.Center.ToVector2();
-            Rotation = MathHelper.ToRadians(45);
         }
 
         public void Update(GameTime gameTime)
         {
-            if (OnGround())
-            {
-                Position.Y = 500;
-                m_velocity.Y = 0;
-                m_acceleration.Y = 0;
-            }
-            else
-            {
-                m_acceleration.Y = 9.8f;
-            }
-
-            UpdateInput(gameTime);
-
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            m_velocity.X -= m_velocity.X * MU;
-            m_velocity += m_acceleration * delta;
-            Position += (m_velocity * delta) * PPU;
+            Velocity.X -= Velocity.X * MU;
+            Velocity += new Vector2(0, 9.8f) * delta;
+            Velocity += Acceleration * delta;
+            Position += (Velocity * delta) * PPU;
+
+            UpdateInput(gameTime);
         }
 
         private void UpdateInput(GameTime gameTime)
         {
             KeyboardState kbs = Keyboard.GetState();
+            MouseState ms = Mouse.GetState();
 
-            if (kbs.IsKeyDown(Keys.Up) && prevKbs.IsKeyUp(Keys.Up) && OnGround())
+            if (kbs.IsKeyDown(Keys.Up) && prevKbs.IsKeyUp(Keys.Up))
             {
-                m_velocity.Y = -2;
+                Velocity.Y = -3;
             }
 
             if (kbs.IsKeyDown(Keys.Right))
             {
-                m_velocity.X = 1.5f;
+                Velocity.X = 1.5f;
                 Effects = SpriteEffects.None;
             }
             else if (kbs.IsKeyDown(Keys.Left))
             {
-                m_velocity.X = -1.5f;
+                Velocity.X = -1.5f;
                 Effects = SpriteEffects.FlipHorizontally;
             }
 
             prevKbs = kbs;
-
-            MouseState ms = Mouse.GetState();
-
-            if (Intersects(ms.Position.ToVector2()))
-            {
-                Color = Color.Red;
-            }
-            else
-            {
-                Color = Color.White;
-            }
-        }
-
-        private bool OnGround()
-        {
-            return (Position.Y >= 500);
         }
     }
 }

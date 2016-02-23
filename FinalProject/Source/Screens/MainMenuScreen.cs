@@ -40,7 +40,7 @@ namespace FinalProject
                 m_game.Exit();
             }
 
-            if (m_startButton.Intersects(ms.Position.ToVector2()))
+            if (m_startButton.Bounds.Contains(ms.Position))
             {
                 m_startButton.Color = Color.Green;
 
