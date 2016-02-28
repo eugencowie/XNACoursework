@@ -40,16 +40,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Source\FinalProjectGame.cs" />
-    <Compile Include="Source\Utilities\Player.cs" />
+    <Compile Include="Source\Screens\GameplayScreen.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Screens\BackgroundScreen.cs" />
-    <Compile Include="Source\Screens\GameplayScreen.cs" />
     <Compile Include="Source\Screens\MainMenuScreen.cs" />
     <Compile Include="Source\Utilities\IScreen.cs" />
-    <Compile Include="Source\Utilities\Map.cs" />
     <Compile Include="Source\Utilities\ScreenManager.cs" />
     <Compile Include="Source\Utilities\Sprite.cs" />
+    <Compile Include="Source\Utilities\ThirdParty\Tiled.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

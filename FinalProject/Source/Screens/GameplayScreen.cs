@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Squared.Tiled;
 
 namespace FinalProject
 {
@@ -13,7 +13,12 @@ namespace FinalProject
         private readonly Game m_game;
 
         private Map m_map;
-        private Player m_player;
+
+        private Object m_player => m_map.ObjectGroups["Objects"].Objects["PlayerStart"];
+
+        private Vector2 m_cameraTarget => new Vector2(m_player.X, m_player.Y);
+
+        private readonly List<Rectangle> m_collisionRect = new List<Rectangle>();
 
         public GameplayScreen(Game game)
         {
@@ -22,15 +27,18 @@ namespace FinalProject
 
         public void Initialize(ContentManager content)
         {
-            m_map = new Map(content, "Content/Maps/Test.txt", "Content/Maps/Test.info.txt", "Maps/Test/tile");
-            m_player = new Player(content.Load<Texture2D>("Textures/Character1"));
+            m_map = Map.Load(content.RootDirectory + "/Maps/Test.tmx", content);
 
-            // Set the player position to the first occurence of a player start tile. This
-            // could be expanded to randomly select a start tile instead.
-            foreach (var tile in m_map.Tiles.Where(t => t.Flags.Contains("playerstart")))
+            m_player.Texture = content.Load<Texture2D>("Textures/Character1");
+
+            foreach (var coll in m_map.ObjectGroups["Collision"].Objects.Values)
             {
-                m_player.Position = new Vector2(tile.X * m_map.TileWidth, tile.Y * m_map.TileHeight - 50);
-                break;
+                m_collisionRect.Add(new Rectangle {
+                    X = coll.X,
+                    Y = coll.Y,
+                    Width = coll.Width,
+                    Height = coll.Height
+                });
             }
         }
 
@@ -38,115 +46,85 @@ namespace FinalProject
         {
         }
 
-        private bool coll(float angle, float center, float range)
-        {
-            return (angle > (center - range) && angle < (center + range));
-        }
-
         public void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            KeyboardState kbs = Keyboard.GetState();
+
+            var oldPos = new Point(m_player.X, m_player.Y);
+
+            if (kbs.IsKeyDown(Keys.W))
             {
-                m_game.Exit();
+                AttemptMoveY(-5);
             }
 
-            m_player.Update(gameTime);
-
-            bool c = false;
-            foreach (var tile in m_map.Tiles.Where(t => t.Flags.Contains("collision") && t.Bounds.Intersects(m_player.Bounds)))
+            else if (kbs.IsKeyDown(Keys.S))
             {
-                Vector2 direction = m_player.Position - tile.Bounds.Center.ToVector2();
-                float angle = MathHelper.ToDegrees((float)Math.Atan2(direction.X, -direction.Y));
-
-                float range = 35;
-
-                if (coll(angle, 0, range))
-                {
-                    if (m_player.Velocity.Y > 0)
-                    {
-                        m_player.Acceleration.Y = -9.8f;
-                        m_player.Velocity.Y = 0;
-                    }
-                }
-                else if (coll(angle, 90, range))
-                {
-                    if (m_player.Velocity.X > 0)
-                        m_player.Velocity.X = 0;
-                }
-                else if (coll(angle, 180, range))
-                {
-                    if (m_player.Velocity.Y < 0)
-                        m_player.Velocity.Y = 0;
-                }
-                else if (coll(angle, -90, range))
-                {
-                    if (m_player.Velocity.X > 0)
-                        m_player.Velocity.X = 0;
-                }
-
-                c = true;
+                AttemptMoveY(5);
             }
 
-            if (!c)
+            else
             {
-                m_player.Color = Color.White;
-
-                m_player.Acceleration.Y = 0;
+                AttemptMoveY(10);
             }
 
-            //Color color = Color.White;
-            //bool onGround = false;
-            /*foreach (var tile in m_map.Tiles.Where(t => t.Flags.Contains("collision") && t.Bounds.Intersects(m_player.Bounds)))
+            if (kbs.IsKeyDown(Keys.A))
             {
-                m_player.Acceleration.Y = -9.8f;
+                AttemptMoveX(-5);
+            }
 
-                Vector2 direction = m_player.Position - tile.Bounds.Center.ToVector2();
-                //direction.Normalize();
-
-                float angle = MathHelper.ToDegrees((float)Math.Atan2(direction.X, -direction.Y));
-
-                if (angle > -45 && angle < 45)
-                {
-                    //color = Color.Red;
-                }
-
-                if (angle > -135 && angle < -45)
-                {
-                    //color = Color.Purple;
-
-                    //m_player.Velocity.X = 0;
-                }
-
-                if (direction.Y < 0)
-                {
-                    //m_player.Position.Y = tile.Bounds.Y - (m_player.Texture.Height / 2f) + 1;
-                    //onGround = true;
-                    //m_player.Acceleration.Y = -9.8f;
-                }
-                else
-                {
-                    //m_player.Velocity.Y = 1;
-                    //onGround = false;
-                }
-
-                if (direction.X < 0)
-                {
-
-                }
-            }*/
-
-            //m_player.OnGround = onGround;
-            //m_player.Color = color;
+            else if (kbs.IsKeyDown(Keys.D))
+            {
+                AttemptMoveX(5);
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 
-            m_map.Draw(spriteBatch);
-            m_player.Draw(spriteBatch);
+            m_map.Draw(spriteBatch, m_game.GraphicsDevice.Viewport.Bounds, m_cameraTarget - m_game.GraphicsDevice.Viewport.Bounds.Center.ToVector2());
 
             spriteBatch.End();
+        }
+
+        private void AttemptMoveX(int x)
+        {
+            var playerBounds = new Rectangle(m_player.X, m_player.Y, m_player.Width, m_player.Height);
+            playerBounds.X += x;
+
+            bool intersects = (m_collisionRect.Count(r => r.Intersects(playerBounds)) > 0);
+            if (intersects)
+            {
+                // If there will be a collision, try to move half the distance instead.
+                int newX = (int)(x / 2f);
+                if (newX > 0)
+                    AttemptMoveX(newX);
+            }
+            else
+            {
+                // If no collision, move the player.
+                m_player.X += x;
+            }
+        }
+
+        private void AttemptMoveY(int y)
+        {
+            var playerBounds = new Rectangle(m_player.X, m_player.Y, m_player.Width, m_player.Height);
+            playerBounds.Y += y;
+
+            bool intersects = (m_collisionRect.Count(r => r.Intersects(playerBounds)) > 0);
+            if (intersects)
+            {
+                // If there will be a collision, try to move half the distance instead.
+                int newY = (int)(y / 2f);
+                if (newY > 0)
+                    AttemptMoveY(newY);
+            }
+            else
+            {
+                // If no collision, move the player.
+                m_player.Y += y;
+            }
         }
     }
 }
