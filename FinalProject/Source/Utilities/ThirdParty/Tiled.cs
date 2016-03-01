@@ -47,19 +47,16 @@ Copyright (C) 2009 Kevin Gadd
  * Zach Musgrave zach.musgrave@gmail.com http://gamedev.sleptlate.org
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Globalization;
+using System.Linq;
+using System.Xml;
 
 namespace Squared.Tiled
 {
@@ -509,18 +506,18 @@ namespace Squared.Tiled
         }
     }
 
-    public class ObjectGroup : IDrawable
+    public class MapObjectGroup : IDrawable
     {
-        public SortedList<string, Object> Objects = new SortedList<string, Object>();
+        public SortedList<string, MapObject> Objects = new SortedList<string, MapObject>();
         public SortedList<string, string> Properties = new SortedList<string, string>();
 
         public string Name;
         public int Width, Height, X, Y;
         float Opacity = 1;
 
-        internal static ObjectGroup Load(XmlReader reader)
+        internal static MapObjectGroup Load(XmlReader reader)
         {
-            var result = new ObjectGroup();
+            var result = new MapObjectGroup();
             CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
             ci.NumberFormat.CurrencyDecimalSeparator = ".";
 
@@ -551,7 +548,7 @@ namespace Squared.Tiled
                                     using (var st = reader.ReadSubtree())
                                     {
                                         st.Read();
-                                        var objects = Object.Load(st);
+                                        var objects = MapObject.Load(st);
                                         if (!result.Objects.ContainsKey(objects.Name))
                                         {
                                             result.Objects.Add(objects.Name, objects);
@@ -615,12 +612,26 @@ namespace Squared.Tiled
         }
     }
 
-    public class Object
+    public class MapObject
     {
         public SortedList<string, string> Properties = new SortedList<string, string>();
 
         public string Name, Image;
-        public int Width, Height, X, Y;
+        public int Width, Height;
+
+        public float X
+        {
+            get { return Position.X; }
+            set { Position.X = value; }
+        }
+
+        public float Y
+        {
+            get { return Position.Y; }
+            set { Position.Y = value; }
+        }
+
+        public SpriteEffects Effects = SpriteEffects.None;
 
         protected Texture2D _Texture;
         protected int _TexWidth, _TexHeight;
@@ -639,9 +650,16 @@ namespace Squared.Tiled
             }
         }
 
-        internal static Object Load(XmlReader reader)
+        public Vector2 Position = new Vector2();
+
+        public Rectangle Bounds
         {
-            var result = new Object();
+            get { return new Rectangle((int)X, (int)Y, Width, Height); }
+        }
+
+        internal static MapObject Load(XmlReader reader)
+        {
+            var result = new MapObject();
 
             result.Name = reader.GetAttribute("name");
             result.X = int.Parse(reader.GetAttribute("x"));
@@ -718,13 +736,15 @@ namespace Squared.Tiled
             int maxX = (int)Math.Ceiling((rectangle.Width + viewportPosition.X));
             int maxY = (int)Math.Ceiling((rectangle.Height + viewportPosition.Y));
 
-            if (this.X + offset.X + this.Width > minX && this.X + offset.X < maxX)
-                if (this.Y + offset.Y + this.Height > minY && this.Y + offset.Y < maxY)
+            if (X + offset.X + Width > minX && X + offset.X < maxX)
+            {
+                if (Y + offset.Y + Height > minY && Y + offset.Y < maxY)
                 {
-                    int x = (int)(this.X + offset.X - viewportPosition.X);
-                    int y = (int)(this.Y + offset.Y - viewportPosition.Y);
-                    batch.Draw(_Texture, new Rectangle(x, y, this.Width, this.Height), new Rectangle(0, 0, _Texture.Width, _Texture.Height), Color.White * opacity);
+                    int x = (int)(X + offset.X - viewportPosition.X);
+                    int y = (int)(Y + offset.Y - viewportPosition.Y);
+                    batch.Draw(_Texture, new Rectangle(x, y, Width, Height), new Rectangle(0, 0, _Texture.Width, _Texture.Height), Color.White * opacity, 0f, Vector2.Zero, Effects, 0f);
                 }
+            }
         }
     }
 
@@ -732,7 +752,7 @@ namespace Squared.Tiled
     {
         public Dictionary<string, Tileset> Tilesets = new Dictionary<string, Tileset>();
         public Dictionary<string, Layer> Layers = new Dictionary<string, Layer>();
-        public Dictionary<string, ObjectGroup> ObjectGroups = new Dictionary<string, ObjectGroup>();
+        public Dictionary<string, MapObjectGroup> ObjectGroups = new Dictionary<string, MapObjectGroup>();
         public Dictionary<string, IDrawable> Drawables = new Dictionary<string, IDrawable>();
         public Dictionary<string, string> Properties = new Dictionary<string, string>();
         public int Width, Height;
@@ -742,9 +762,9 @@ namespace Squared.Tiled
         {
             var result = new Map();
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
 
-            using (var stream = System.IO.File.OpenText(filename))
+            using (var stream = File.OpenText(filename))
             using (var reader = XmlReader.Create(stream, settings))
                 while (reader.Read())
                 {
@@ -796,7 +816,7 @@ namespace Squared.Tiled
                                         using (var st = reader.ReadSubtree())
                                         {
                                             st.Read();
-                                            var objectgroup = ObjectGroup.Load(st);
+                                            var objectgroup = MapObjectGroup.Load(st);
                                             result.Drawables.Add(objectgroup.Name, objectgroup);
                                             result.ObjectGroups.Add(objectgroup.Name, objectgroup);
                                         }

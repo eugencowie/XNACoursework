@@ -46,6 +46,7 @@
     <Compile Include="Source\Screens\BackgroundScreen.cs" />
     <Compile Include="Source\Screens\MainMenuScreen.cs" />
     <Compile Include="Source\Utilities\IScreen.cs" />
+    <Compile Include="Source\Utilities\Player.cs" />
     <Compile Include="Source\Utilities\ScreenManager.cs" />
     <Compile Include="Source\Utilities\Sprite.cs" />
     <Compile Include="Source\Utilities\ThirdParty\Tiled.cs" />
