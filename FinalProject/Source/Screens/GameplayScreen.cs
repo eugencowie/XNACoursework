@@ -5,6 +5,9 @@ using Squared.Tiled;
 
 namespace FinalProject
 {
+    /// <summary>
+    /// The gameplay screen is the screen which handles the actual gameplay.
+    /// </summary>
     class GameplayScreen : IScreen
     {
         private readonly Game m_game;
@@ -43,6 +46,10 @@ namespace FinalProject
             m_map.Draw(spriteBatch, screenBounds, cameraTarget - screenBounds.Center.ToVector2());
 
             spriteBatch.End();
+        }
+
+        public void Covered(bool covered)
+        {
         }
     }
 }

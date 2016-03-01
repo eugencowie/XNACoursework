@@ -20,6 +20,9 @@ namespace FinalProject
             m_spriteBatch = spriteBatch;
         }
 
+        /// <summary>
+        /// Remove all existing screens and then add the specified screen.
+        /// </summary>
         public void SwitchTo(IScreen screen)
         {
             RemoveAll();
@@ -27,22 +30,40 @@ namespace FinalProject
             Push(screen);
         }
 
+        /// <summary>
+        /// Add a new screen on top of the current screen.
+        /// </summary>
         public void Push(IScreen screen)
         {
-            screen.Initialize(m_content);
+            if (m_screens.Any())
+            {
+                m_screens.Peek().Covered(true);
+            }
 
+            screen.Initialize(m_content);
             m_screens.Push(screen);
         }
 
+        /// <summary>
+        /// Remove the top-most screen.
+        /// </summary>
         public void Pop()
         {
             if (m_screens.Any())
             {
                 m_screens.Peek().Dispose();
                 m_screens.Pop();
+
+                if (m_screens.Any())
+                {
+                    m_screens.Peek().Covered(false);
+                }
             }
         }
 
+        /// <summary>
+        /// Remove all screens.
+        /// </summary>
         private void RemoveAll()
         {
             while (m_screens.Any())
@@ -51,25 +72,31 @@ namespace FinalProject
             }
         }
 
-        public void Dispose()
-        {
-            RemoveAll();
-        }
-
+        /// <summary>
+        /// Update all screens, from bottom-most first to top-most last.
+        /// </summary>
         public void Update(GameTime gameTime)
         {
-            foreach (IScreen screen in m_screens.Reverse())
+            foreach (var screen in m_screens.Reverse())
             {
                 screen.Update(gameTime);
             }
         }
 
+        /// <summary>
+        /// Draw all screens, from bottom-most first to top-most last.
+        /// </summary>
         public void Draw(GameTime gameTime)
         {
-            foreach (IScreen screen in m_screens.Reverse())
+            foreach (var screen in m_screens.Reverse())
             {
                 screen.Draw(gameTime, m_spriteBatch);
             }
+        }
+
+        public void Dispose()
+        {
+            RemoveAll();
         }
     }
 }

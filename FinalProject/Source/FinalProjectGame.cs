@@ -12,8 +12,8 @@ namespace FinalProject
         {
             var graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 800,
-                PreferredBackBufferHeight = 600
+                PreferredBackBufferWidth = 1280,
+                PreferredBackBufferHeight = 720
             };
 
             IsMouseVisible = true;

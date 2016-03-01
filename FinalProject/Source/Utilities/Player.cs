@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Squared.Tiled;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +25,8 @@ namespace FinalProject
         private Vector2 m_acceleration = new Vector2();
         private Vector2 m_gravity = new Vector2(0, 9.8f);
 
+        private bool m_onGround = false;
+
         public Player(Map map, Texture2D texture)
         {
             m_map = map;
@@ -40,6 +41,8 @@ namespace FinalProject
 
         public void Update(GameTime gameTime)
         {
+            // PHYSICS:
+
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             m_velocity.X -= m_velocity.X * 0.2f;
@@ -49,6 +52,8 @@ namespace FinalProject
 
             AttemptMoveX((m_velocity.X * delta) * 400);
             AttemptMoveY((m_velocity.Y * delta) * 400);
+
+            // INPUT:
 
             KeyboardState kbs = Keyboard.GetState();
 
@@ -96,8 +101,6 @@ namespace FinalProject
                 m_player.X += x;
             }
         }
-
-        private bool m_onGround = false;
 
         private void AttemptMoveY(float y)
         {

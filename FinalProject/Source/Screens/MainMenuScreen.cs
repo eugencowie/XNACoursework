@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FinalProject
 {
+    /// <summary>
+    /// The main (or primary) menu screen, which contains buttons for starting/quitting the
+    /// game as well as buttons to show the options menu screen or the credits menu screen.
+    /// </summary>
     class MainMenuScreen : IScreen
     {
         private readonly Game m_game;
@@ -35,15 +39,20 @@ namespace FinalProject
             KeyboardState kbs = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
+            // Exit the game if the escape key is pressed.
             if (kbs.IsKeyDown(Keys.Escape))
             {
                 m_game.Exit();
             }
 
+            // If the mouse is over the start button, set its colour to green,
+            // otherwise set its colour to red.
             if (m_startButton.Bounds.Contains(ms.Position))
             {
                 m_startButton.Color = Color.Green;
 
+                // If the mouse is clicked while over the start button, switch to
+                // the gameplay screen.
                 if (ms.LeftButton == ButtonState.Pressed)
                 {
                     m_screenManager.SwitchTo(new GameplayScreen(m_game));
@@ -62,6 +71,10 @@ namespace FinalProject
             m_startButton.Draw(spriteBatch);
 
             spriteBatch.End();
+        }
+
+        public void Covered(bool covered)
+        {
         }
     }
 }

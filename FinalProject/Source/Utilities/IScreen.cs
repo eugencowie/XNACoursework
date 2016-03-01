@@ -11,5 +11,7 @@ namespace FinalProject
 
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+
+        void Covered(bool covered);
     }
 }
