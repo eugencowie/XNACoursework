@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,12 +6,12 @@ using Microsoft.Xna.Framework.Content;
 
 namespace FinalProject
 {
-    class ScreenManager : IDisposable
+    class ScreenManager
     {
-        private readonly ContentManager m_content;
-        private readonly SpriteBatch m_spriteBatch;
+        ContentManager m_content;
+        SpriteBatch m_spriteBatch;
 
-        private readonly Stack<IScreen> m_screens = new Stack<IScreen>();
+        List<IScreen> m_screens = new List<IScreen>();
 
         public ScreenManager(ContentManager content, SpriteBatch spriteBatch)
         {
@@ -20,12 +19,67 @@ namespace FinalProject
             m_spriteBatch = spriteBatch;
         }
 
+        public void Dispose()
+        {
+            Clear();
+        }
+        
+        /// <summary>
+        /// Update all screens, from bottom-most to top-most.
+        /// </summary>
+        public void Update(GameTime gameTime)
+        {
+            List<IScreen> copy = m_screens.ToList();
+
+            foreach (var screen in copy)
+            {
+                screen.Update(gameTime);
+            }
+        }
+
+        /// <summary>
+        /// Draw all screens, from bottom-most to top-most.
+        /// </summary>
+        public void Draw(GameTime gameTime)
+        {
+            List<IScreen> copy = m_screens.ToList();
+
+            foreach (var screen in copy)
+            {
+                screen.Draw(gameTime, m_spriteBatch);
+            }
+        }
+
+        /// <summary>
+        /// Get the top-most screen.
+        /// </summary>
+        public IScreen Top()
+        {
+            if (m_screens.Count == 0)
+            {
+                return null;
+            }
+
+            return m_screens[m_screens.Count - 1];
+        }
+
+        /// <summary>
+        /// Remove all screens.
+        /// </summary>
+        public void Clear()
+        {
+            while (m_screens.Count > 0)
+            {
+                Pop();
+            }
+        }
+
         /// <summary>
         /// Remove all existing screens and then add the specified screen.
         /// </summary>
         public void SwitchTo(IScreen screen)
         {
-            RemoveAll();
+            Clear();
 
             Push(screen);
         }
@@ -35,13 +89,13 @@ namespace FinalProject
         /// </summary>
         public void Push(IScreen screen)
         {
-            if (m_screens.Any())
+            if (m_screens.Count > 0)
             {
-                m_screens.Peek().Covered(true);
+                Top().Covered();
             }
 
+            m_screens.Add(screen);
             screen.Initialize(m_content);
-            m_screens.Push(screen);
         }
 
         /// <summary>
@@ -49,54 +103,16 @@ namespace FinalProject
         /// </summary>
         public void Pop()
         {
-            if (m_screens.Any())
+            if (m_screens.Count > 0)
             {
-                m_screens.Peek().Dispose();
-                m_screens.Pop();
+                Top().Dispose();
+                m_screens.RemoveAt(m_screens.Count - 1);
 
-                if (m_screens.Any())
+                if (m_screens.Count > 0)
                 {
-                    m_screens.Peek().Covered(false);
+                    Top().Uncovered();
                 }
             }
-        }
-
-        /// <summary>
-        /// Remove all screens.
-        /// </summary>
-        private void RemoveAll()
-        {
-            while (m_screens.Any())
-            {
-                Pop();
-            }
-        }
-
-        /// <summary>
-        /// Update all screens, from bottom-most first to top-most last.
-        /// </summary>
-        public void Update(GameTime gameTime)
-        {
-            foreach (var screen in m_screens.Reverse())
-            {
-                screen.Update(gameTime);
-            }
-        }
-
-        /// <summary>
-        /// Draw all screens, from bottom-most first to top-most last.
-        /// </summary>
-        public void Draw(GameTime gameTime)
-        {
-            foreach (var screen in m_screens.Reverse())
-            {
-                screen.Draw(gameTime, m_spriteBatch);
-            }
-        }
-
-        public void Dispose()
-        {
-            RemoveAll();
         }
     }
 }

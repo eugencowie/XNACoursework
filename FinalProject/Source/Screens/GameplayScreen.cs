@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Squared.Tiled;
+using Microsoft.Xna.Framework.Input;
 
 namespace FinalProject
 {
@@ -10,21 +12,31 @@ namespace FinalProject
     /// </summary>
     class GameplayScreen : IScreen
     {
-        private readonly Game m_game;
+        Game m_game;
+        ScreenManager m_screenManager;
 
-        private Map m_map;
-        private Player m_player;
+        Camera m_camera;
 
-        public GameplayScreen(Game game)
+        Map m_map;
+        Player m_player;
+        
+        KeyboardState m_prevKbState;
+
+        public GameplayScreen(Game game, ScreenManager screenManager)
         {
             m_game = game;
+            m_screenManager = screenManager;
         }
 
         public void Initialize(ContentManager content)
         {
-            m_map = Map.Load(content.RootDirectory + "/Maps/Test.tmx", content);
+            m_camera = new Camera();
+            m_camera.Origin = (m_game.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
 
-            m_player = new Player(m_map, content.Load<Texture2D>("Textures/Character1"));
+            m_map = new Map(content, "Maps/Test");
+
+            m_player = new Player(m_game, content, m_map.CollisionList);
+            m_player.Position = m_map.PlayerStart;
         }
 
         public void Dispose()
@@ -33,22 +45,34 @@ namespace FinalProject
 
         public void Update(GameTime gameTime)
         {
+            KeyboardState kbState = Keyboard.GetState();
+
+            if (kbState.IsKeyUp(Keys.Escape) && m_prevKbState.IsKeyDown(Keys.Escape))
+            {
+                m_screenManager.SwitchTo(new MainMenuScreen(m_game, m_screenManager));
+            }
+
+            m_prevKbState = kbState;
+
             m_player.Update(gameTime);
+            m_camera.Position = m_player.Position;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: m_camera.GetViewMatrix());
 
-            var cameraTarget = new Vector2(m_player.X, m_player.Y);
-            var screenBounds = m_game.GraphicsDevice.Viewport.Bounds;
-
-            m_map.Draw(spriteBatch, screenBounds, cameraTarget - screenBounds.Center.ToVector2());
+            m_map.Draw(gameTime, spriteBatch);
+            m_player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
         }
 
-        public void Covered(bool covered)
+        public void Covered()
+        {
+        }
+
+        public void Uncovered()
         {
         }
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="10">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="14">
  <tileset firstgid="1" name="Tileset1" tilewidth="32" tileheight="32" tilecount="144" columns="8">
   <image source="tileset.png" width="256" height="576"/>
  </tileset>
- <layer name="BG_Background" width="50" height="30">
+ <layer name="Background" width="50" height="30">
   <data>
    <tile gid="133"/>
    <tile gid="133"/>
@@ -1507,7 +1507,7 @@
    <tile gid="133"/>
   </data>
  </layer>
- <layer name="BG_Terrain" width="50" height="30">
+ <layer name="Terrain" width="50" height="30">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -2571,13 +2571,13 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="99"/>
+   <tile gid="50"/>
+   <tile gid="90"/>
+   <tile gid="90"/>
+   <tile gid="90"/>
+   <tile gid="56"/>
+   <tile gid="100"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -3014,7 +3014,7 @@
  <objectgroup color="#0000ff" name="Objects">
   <object id="7" name="PlayerStart" x="64" y="768" width="32" height="32"/>
  </objectgroup>
- <layer name="FG_Foreground" width="50" height="30">
+ <layer name="Foreground" width="50" height="30">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -4519,9 +4519,8 @@
   </data>
  </layer>
  <objectgroup color="#ff0000" name="Collision">
-  <object id="1" name="Coll1" x="0" y="800" width="720" height="160"/>
-  <object id="2" name="Coll3" x="912" y="800" width="688" height="160"/>
+  <object id="1" name="Coll1" x="0" y="800" width="1600" height="160"/>
   <object id="8" name="Coll2" x="219" y="768" width="106" height="32"/>
-  <object id="9" name="Coll4" x="720" y="816" width="192" height="16"/>
+  <object id="10" name="coll5" x="411" y="672" width="170" height="32"/>
  </objectgroup>
 </map>

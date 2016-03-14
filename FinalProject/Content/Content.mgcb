@@ -52,7 +52,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Menu/StartButton.png
 
-#begin Maps/tileset.png
+#begin Textures/Bullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -61,8 +61,30 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Maps/tileset.png
+/build:Textures/Bullet.png
 
-#begin Maps/Test.tmx
-/copy:Maps/Test.tmx
+#begin Maps/Test.csv
+/copy:Maps/Test.csv
+
+#begin Maps/Test.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Maps/Test.png
+
+#begin Textures/RedPixel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Textures/RedPixel.png
 
