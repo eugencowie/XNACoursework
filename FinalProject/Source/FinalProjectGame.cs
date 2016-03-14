@@ -5,15 +5,15 @@ namespace FinalProject
 {
     public class FinalProjectGame : Game
     {
-        private SpriteBatch m_spriteBatch;
-        private ScreenManager m_screenManager;
+        SpriteBatch m_spriteBatch;
+        ScreenManager m_screenManager;
 
         public FinalProjectGame()
         {
             var graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 800,
-                PreferredBackBufferHeight = 600
+                PreferredBackBufferWidth = 1280,
+                PreferredBackBufferHeight = 720
             };
 
             IsMouseVisible = true;
@@ -23,20 +23,19 @@ namespace FinalProject
 
         protected override void LoadContent()
         {
+#if DEBUG
+            Debug.Initialize(Content);
+#endif
+
             m_spriteBatch = new SpriteBatch(GraphicsDevice);
             m_screenManager = new ScreenManager(Content, m_spriteBatch);
-
-            m_screenManager.SwitchTo(new BackgroundScreen(this));
-            m_screenManager.Push(new MainMenuScreen(this, m_screenManager));
+            
+            m_screenManager.SwitchTo(new MainMenuScreen(this, m_screenManager));
         }
 
         protected override void UnloadContent()
         {
-            if (m_screenManager != null)
-            {
-                m_screenManager.Dispose();
-                m_screenManager = null;
-            }
+            m_screenManager.Dispose();
         }
 
         protected override void Update(GameTime gameTime)
